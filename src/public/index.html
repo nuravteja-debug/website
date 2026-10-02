@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WhatsFlow | WhatsApp Web Engine & REST API</title>
+  <meta name="description" content="Open-Source WhatsApp Web Sender, Live Chat UI, API Key Generator, Future Message Scheduler & REST API Engine">
+  <link rel="stylesheet" href="/css/styles.css">
+  <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+  <div id="app">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">💬</div>
+        <div>
+          <div class="brand-title">WhatsFlow</div>
+          <span class="brand-badge">Open Source v1.0</span>
+        </div>
+      </div>
+
+      <ul class="nav-list">
+        <li class="nav-item active" data-tab="tab-overview">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+          Overview
+        </li>
+        <li class="nav-item" data-tab="tab-qr">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+          WhatsApp Web QR
+        </li>
+        <li class="nav-item" data-tab="tab-chat">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+          Live Chat UI
+        </li>
+        <li class="nav-item" data-tab="tab-send">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
+          Direct Message
+        </li>
+        <li class="nav-item" data-tab="tab-schedule">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Schedule Future
+        </li>
+        <li class="nav-item" data-tab="tab-bulk">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"></path></svg>
+          Bulk Campaign
+        </li>
+        <li class="nav-item" data-tab="tab-keys">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z"></path></svg>
+          API Key Generator
+        </li>
+        <li class="nav-item" data-tab="tab-templates">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+          Templates
+        </li>
+        <li class="nav-item" data-tab="tab-api">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
+          REST API Docs
+        </li>
+        <li class="nav-item" data-tab="tab-logs">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+          System Logs
+        </li>
+        <li class="nav-item" data-tab="tab-history">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+          Chat History
+        </li>
+      </ul>
+
+      <div class="sidebar-footer">
+        <div class="wa-status-widget">
+          <div id="sidebar-status-dot" class="status-indicator disconnected"></div>
+          <div>
+            <div id="sidebar-status-text" class="status-info-title">Disconnected</div>
+            <div id="sidebar-user-text" class="status-info-sub">No session</div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <header class="top-header">
+        <div class="page-title-group">
+          <h1 id="page-title">Dashboard Overview</h1>
+          <p id="page-subtitle">WhatsApp Web Automation & Messaging Platform</p>
+        </div>
+        <div class="header-actions">
+          <span id="india-badge" class="brand-badge" style="background: rgba(245, 158, 11, 0.15); color: #f59e0b; border-color: rgba(245, 158, 11, 0.3);">
+            🇮🇳 India (+91) Only Mode
+          </span>
+          <button id="header-connect-btn" class="btn btn-primary btn-sm">
+            ⚡ Connect Session
+          </button>
+        </div>
+      </header>
+
+      <div class="content-body">
+
+        <!-- TAB 1: OVERVIEW -->
+        <section id="tab-overview" class="tab-pane active">
+          <div class="card-grid">
+            <div class="stat-card">
+              <div class="stat-icon green">💬</div>
+              <div>
+                <div id="stat-sent-count" class="stat-value">0</div>
+                <div class="stat-label">Total Sent Messages</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon indigo">⏰</div>
+              <div>
+                <div id="stat-schedule-count" class="stat-value">0</div>
+                <div class="stat-label">Scheduled Future Jobs</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon cyan">🔑</div>
+              <div>
+                <div id="stat-key-count" class="stat-value">1</div>
+                <div class="stat-label">Active API Keys</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon amber">⚡</div>
+              <div>
+                <div id="stat-status-val" class="stat-value" style="font-size:1.1rem; text-transform:uppercase;">OFFLINE</div>
+                <div class="stat-label">WhatsApp Engine State</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Policy & Safeguard Panel -->
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div class="panel-title">🛡️ Country Protection & Safeguard Settings</div>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <h4 style="font-size: 1rem; font-weight: 700;">Restrict Messaging to Indian (+91) Numbers</h4>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">When active, messages can strictly only be dispatched to Indian mobile numbers (+91 / 10-digit Indian numbers).</p>
+              </div>
+              <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-weight: 600;">
+                <input type="checkbox" id="toggle-india-only" checked style="width: 20px; height: 20px; accent-color: var(--accent-green);">
+                <span>Enforce +91 Only</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div class="panel-title">📱 Live Connection Status</div>
+              <button class="btn btn-secondary btn-sm" onclick="switchTab('tab-qr')">Manage Session</button>
+            </div>
+            <div id="overview-connection-banner" style="display: flex; align-items: center; justify-content: space-between; padding: 1rem; background: rgba(255,255,255,0.03); border-radius: var(--radius-md);">
+              <div>
+                <h3 id="overview-conn-title" style="font-size: 1.1rem; font-weight: 700;">WhatsApp Web is Disconnected</h3>
+                <p id="overview-conn-desc" style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Click the button on the right to scan QR code and connect your phone.</p>
+              </div>
+              <button class="btn btn-primary" onclick="switchTab('tab-qr')">Scan QR Code</button>
+            </div>
+          </div>
+
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div class="panel-title">📜 Recent System Activity</div>
+            </div>
+            <div id="overview-logs-list" class="log-terminal" style="height: 220px;">
+              <div class="log-item"><span class="log-time">System initialized</span> Ready for action.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 2: WHATSAPP QR -->
+        <section id="tab-qr" class="tab-pane">
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div class="panel-title">📱 WhatsApp Web QR Session</div>
+              <div style="display:flex; gap:0.5rem;">
+                <button id="btn-reconnect" class="btn btn-secondary btn-sm">🔄 Refresh Session</button>
+                <button id="btn-logout" class="btn btn-danger btn-sm" style="display:none;">🚪 Logout</button>
+              </div>
+            </div>
+
+            <div class="qr-container">
+              <div id="user-info-card" class="user-profile-box" style="display:none; width: 100%; max-width: 480px;">
+                <div class="user-avatar">👤</div>
+                <div>
+                  <h3 id="user-pushname" style="font-size: 1.1rem; font-weight: 700;">WhatsApp User</h3>
+                  <p id="user-phone" style="font-size: 0.85rem; color: var(--accent-green);">Connected</p>
+                  <p style="font-size: 0.78rem; color: var(--text-muted); margin-top: 4px;">Session is active and stored securely locally.</p>
+                </div>
+              </div>
+
+              <div id="qr-box-wrapper" class="qr-box">
+                <div id="qr-spinner" class="qr-placeholder">Initializing WhatsApp Web...</div>
+                <img id="qr-image" src="" alt="WhatsApp QR Code" style="display:none;">
+              </div>
+
+              <div id="qr-instruction" style="max-width: 400px; color: var(--text-muted); font-size: 0.85rem; line-height: 1.5;">
+                Open WhatsApp on your mobile phone → Menu or Settings → Linked Devices → Tap <strong>Link a Device</strong> and point camera at QR code.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 3: LIVE CHAT INTERFACE -->
+        <section id="tab-chat" class="tab-pane">
+          <div class="glass-panel" style="padding: 0; display: flex; height: 620px; overflow: hidden;">
+            <!-- Contacts Sidebar -->
+            <div style="width: 300px; border-right: 1px solid var(--border-glass); display: flex; flex-direction: column;">
+              <div style="padding: 1rem; border-bottom: 1px solid var(--border-glass); display: flex; justify-content: space-between; align-items: center;">
+                <h3 style="font-size: 1rem; font-weight: 700;">WhatsApp Chats</h3>
+                <button class="btn btn-secondary btn-sm" onclick="loadChats()">🔄 Refresh</button>
+              </div>
+              <div id="chats-list-container" style="flex: 1; overflow-y: auto;">
+                <p style="padding: 1rem; color: var(--text-muted); font-size: 0.85rem;">Connect WhatsApp Web to view active conversations.</p>
+              </div>
+            </div>
+
+            <!-- Chat Thread Area -->
+            <div style="flex: 1; display: flex; flex-direction: column; background: rgba(0,0,0,0.2);">
+              <div id="chat-thread-header" style="padding: 1rem; border-bottom: 1px solid var(--border-glass); background: rgba(255,255,255,0.02);">
+                <h4 id="chat-thread-title" style="font-size: 1rem; font-weight: 700;">Select a Conversation</h4>
+                <span id="chat-thread-sub" style="font-size: 0.85rem; color: var(--text-muted);">Pick a contact from the left sidebar</span>
+              </div>
+
+              <div id="chat-messages-container" style="flex: 1; padding: 1.25rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.75rem;">
+                <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem; margin: auto;">No chat selected.</p>
+              </div>
+
+              <form id="form-chat-send" style="padding: 1rem; border-top: 1px solid var(--border-glass); display: flex; gap: 0.75rem; background: rgba(0,0,0,0.3);">
+                <input type="text" id="chat-input-msg" class="form-control" placeholder="Type a message reply..." disabled>
+                <button type="submit" id="btn-chat-send" class="btn btn-primary" disabled>Send</button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 4: DIRECT MESSAGE -->
+        <section id="tab-send" class="tab-pane">
+          <div class="glass-panel" style="max-width: 720px; margin: 0 auto;">
+            <div class="panel-header">
+              <div class="panel-title">💬 Send Direct WhatsApp Message</div>
+            </div>
+
+            <form id="form-send-direct">
+              <div class="form-group">
+                <label class="form-label">Recipient Indian Phone Number (+91)</label>
+                <input type="text" id="send-phone" class="form-control" placeholder="e.g. 9876543210 or 919876543210" required>
+                <small style="color: var(--accent-amber); font-size: 0.75rem; margin-top: 4px; display: block;">🇮🇳 Only Indian numbers starting with 91 or 10-digit mobile numbers are accepted.</small>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label" style="display: flex; justify-content: space-between;">
+                  <span>Message Content</span>
+                  <select id="send-template-select" style="background:none; border:none; color:var(--accent-green); font-size:0.8rem; cursor:pointer;">
+                    <option value="">Insert Template...</option>
+                  </select>
+                </label>
+                <textarea id="send-message" class="form-control" rows="5" placeholder="Type your WhatsApp message here..."></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Attachment / Media File (Optional)</label>
+                <input type="file" id="send-file" class="form-control">
+              </div>
+
+              <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem;">
+                <button type="submit" id="btn-submit-direct" class="btn btn-primary" style="width: 100%;">
+                  🚀 Send Message Now
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- TAB 5: SCHEDULE FUTURE MESSAGES -->
+        <section id="tab-schedule" class="tab-pane">
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div class="panel-title">⏰ Schedule Future Message</div>
+            </div>
+
+            <form id="form-schedule">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Recipient Phone Number (Indian +91)</label>
+                  <input type="text" id="sched-phone" class="form-control" placeholder="e.g. 9876543210" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Scheduled Future Date & Time</label>
+                  <input type="datetime-local" id="sched-datetime" class="form-control" required>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Message Body</label>
+                <textarea id="sched-message" class="form-control" rows="3" placeholder="Message to be sent automatically at the scheduled time..." required></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                ⏰ Schedule Message Delivery
+              </button>
+            </form>
+          </div>
+
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div class="panel-title">📋 Scheduled Future Messages Queue</div>
+            </div>
+            <div id="scheduled-queue-container">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 6: BULK CAMPAIGN -->
+        <section id="tab-bulk" class="tab-pane">
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div class="panel-title">🚀 Create Bulk Campaign</div>
+            </div>
+
+            <form id="form-bulk-campaign">
+              <div class="form-row">
+                <div class="form-group">
+                  <label class="form-label">Campaign Title</label>
+                  <input type="text" id="bulk-name" class="form-control" placeholder="e.g. Festive Offer Broadcast" required>
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Min Throttle Delay (ms)</label>
+                  <input type="number" id="bulk-delay-min" class="form-control" value="3000" step="500">
+                </div>
+                <div class="form-group">
+                  <label class="form-label">Max Throttle Delay (ms)</label>
+                  <input type="number" id="bulk-delay-max" class="form-control" value="7000" step="500">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Message Template (supports variables like {name}, {order_id})</label>
+                <textarea id="bulk-template" class="form-control" rows="4" placeholder="Hello {name}! Your special offer is ready..." required></textarea>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label">Indian Recipient Numbers (CSV or Line Separated)</label>
+                <textarea id="bulk-recipients-text" class="form-control" rows="4" placeholder="9876543210&#10;9876543211&#10;Or CSV:&#10;phone,name&#10;9876543210,Rahul"></textarea>
+              </div>
+
+              <button type="submit" class="btn btn-primary" style="width: 100%;">
+                ▶ Start Bulk Campaign
+              </button>
+            </form>
+          </div>
+
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div class="panel-title">📊 Campaign Monitor</div>
+            </div>
+            <div id="campaign-monitor-container">
+              <p style="color: var(--text-muted); font-size: 0.85rem;">No active campaigns running currently.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 7: API KEY GENERATOR -->
+        <section id="tab-keys" class="tab-pane">
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div class="panel-title">🔑 API Key Generator & Manager</div>
+              <button class="btn btn-primary btn-sm" onclick="showGenerateKeyModal()">+ Generate New API Key</button>
+            </div>
+
+            <p style="color: var(--text-muted); font-size: 0.88rem; margin-bottom: 1.25rem;">
+              Generate secret API keys to allow external backend applications (Python, PHP, Node.js, C#) to send WhatsApp messages securely.
+            </p>
+
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Label</th>
+                  <th>API Secret Key</th>
+                  <th>Created Date</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="api-keys-tbody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- TAB 8: TEMPLATES -->
+        <section id="tab-templates" class="tab-pane">
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div class="panel-title">📋 Reusable Message Templates</div>
+              <button class="btn btn-primary btn-sm" onclick="showCreateTemplateModal()">+ New Template</button>
+            </div>
+
+            <div id="templates-grid" class="card-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 9: REST API DOCS -->
+        <section id="tab-api" class="tab-pane">
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div class="panel-title">⚡ REST API Developer Gateway</div>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem;">
+              WhatsFlow provides a high-performance REST API allowing you to send WhatsApp messages from any backend (Python, Node, PHP, Go, Curl).
+            </p>
+
+            <h3 style="font-size: 1rem; margin-bottom: 0.5rem; color: var(--accent-green);">1. Send Single Message (POST /api/v1/send-message)</h3>
+            <div class="code-block">
+curl -X POST http://localhost:3000/api/v1/send-message \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: wf_live_your_generated_key_here" \
+  -d '{
+    "to": "9876543210",
+    "message": "Hello from WhatsFlow REST API!"
+  }'
+            </div>
+
+            <h3 style="font-size: 1rem; margin-top: 1.5rem; margin-bottom: 0.5rem; color: var(--accent-green);">2. Schedule Future Message (POST /api/v1/scheduled)</h3>
+            <div class="code-block">
+curl -X POST http://localhost:3000/api/v1/scheduled \
+  -H "Content-Type: application/json" \
+  -H "x-api-key: wf_live_your_generated_key_here" \
+  -d '{
+    "to": "9876543210",
+    "message": "Reminder: Meeting tomorrow at 10 AM",
+    "scheduledAt": "2026-10-03T10:00:00Z"
+  }'
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 10: LOGS -->
+        <section id="tab-logs" class="tab-pane">
+          <div class="glass-panel">
+            <div class="panel-header">
+              <div class="panel-title">📜 Real-Time Audit Log Terminal</div>
+              <button class="btn btn-secondary btn-sm" onclick="clearLogsUI()">Clear Console</button>
+            </div>
+
+            <div id="full-log-terminal" class="log-terminal">
+              <!-- Logs stream live here -->
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB 11: CHAT HISTORY -->
+        <section id="tab-history" class="tab-pane">
+          <!-- Stats Row -->
+          <div class="card-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 1.5rem;">
+            <div class="stat-card">
+              <div class="stat-icon cyan">💬</div>
+              <div>
+                <div id="hist-stat-chats" class="stat-value">0</div>
+                <div class="stat-label">Total Chats</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon green">📨</div>
+              <div>
+                <div id="hist-stat-total" class="stat-value">0</div>
+                <div class="stat-label">Total Messages</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon indigo">↗️</div>
+              <div>
+                <div id="hist-stat-sent" class="stat-value">0</div>
+                <div class="stat-label">Sent by Me</div>
+              </div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-icon amber">↙️</div>
+              <div>
+                <div id="hist-stat-recv" class="stat-value">0</div>
+                <div class="stat-label">Received</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Main Panel -->
+          <div class="glass-panel" style="padding: 0; display: flex; height: 600px; overflow: hidden;">
+            <!-- Left: Contacts Sidebar -->
+            <div id="hist-sidebar" style="width: 300px; border-right: 1px solid var(--border-glass); display: flex; flex-direction: column; flex-shrink: 0;">
+              <div style="padding: 0.85rem 1rem; border-bottom: 1px solid var(--border-glass);">
+                <input id="hist-search" class="form-control" placeholder="🔍 Search chats..." style="margin-bottom: 0.5rem;" oninput="filterHistoryChats(this.value)">
+                <div style="display: flex; gap: 0.5rem;">
+                  <button class="btn btn-secondary btn-sm" style="flex:1;" onclick="loadHistory()">🔄 Refresh</button>
+                  <button class="btn btn-danger btn-sm" style="flex:1;" onclick="clearAllHistory()">🗑️ Clear All</button>
+                </div>
+              </div>
+              <div id="hist-contacts-list" style="flex: 1; overflow-y: auto;">
+                <p style="padding: 1rem; color: var(--text-muted); font-size: 0.85rem;">No chat history yet. Messages you send and receive will appear here.</p>
+              </div>
+            </div>
+
+            <!-- Right: Message Thread -->
+            <div style="flex: 1; display: flex; flex-direction: column; background: rgba(0,0,0,0.15);">
+              <!-- Thread Header -->
+              <div id="hist-thread-header" style="padding: 0.85rem 1.2rem; border-bottom: 1px solid var(--border-glass); background: rgba(255,255,255,0.02); display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <h4 id="hist-thread-name" style="font-size: 1rem; font-weight: 700;">Select a Conversation</h4>
+                  <span id="hist-thread-sub" style="font-size: 0.8rem; color: var(--text-muted);">Pick a contact from the left</span>
+                </div>
+                <div id="hist-thread-actions" style="display: none; gap: 0.5rem;">
+                  <button id="hist-btn-clear-chat" class="btn btn-secondary btn-sm" onclick="clearHistoryChat()">🧹 Clear Chat</button>
+                  <button id="hist-btn-delete-chat" class="btn btn-danger btn-sm" onclick="deleteHistoryChat()">🗑️ Delete Chat</button>
+                </div>
+              </div>
+
+              <!-- WhatsApp-style Background -->
+              <div id="hist-messages-area" style="
+                flex: 1;
+                padding: 1.25rem;
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 0.6rem;
+                background-image: radial-gradient(rgba(16,185,129,0.03) 1px, transparent 1px);
+                background-size: 30px 30px;
+              ">
+                <div style="text-align: center; margin: auto; color: var(--text-muted);">
+                  <div style="font-size: 3rem; margin-bottom: 0.5rem;">💬</div>
+                  <p style="font-size: 0.9rem;">Select a chat to view history</p>
+                </div>
+              </div>
+
+              <!-- Date label pinned at bottom if needed -->
+              <div id="hist-empty-state" style="display:none; text-align: center; padding: 2rem; color: var(--text-muted); font-size: 0.85rem;">
+                No messages in this chat yet.
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>

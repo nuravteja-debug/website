@@ -1,0 +1,34 @@
+{
+  "name": "whatsflow",
+  "version": "1.0.0",
+  "description": "Open-Source WhatsApp Web Automation Engine, Bulk Messaging Platform & REST API",
+  "main": "src/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "keywords": [
+    "whatsapp",
+    "whatsapp-web",
+    "whatsapp-api",
+    "bulk-messaging",
+    "whatsapp-bot",
+    "automation",
+    "puppeteer",
+    "open-source"
+  ],
+  "author": "Open Source Contributor",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.5",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "multer": "^2.4.0",
+    "qrcode": "^1.5.4",
+    "socket.io": "^4.8.4",
+    "uuid": "^14.0.2",
+    "whatsapp-web.js": "^1.34.7"
+  }
+}

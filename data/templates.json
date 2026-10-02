@@ -1,0 +1,20 @@
+[
+  {
+    "id": "tmpl-welcome",
+    "title": "Welcome Greetings",
+    "content": "Hello {name}! 👋 Welcome to our platform. Let us know if you have any questions.",
+    "createdAt": "2026-10-02T15:41:50.568Z"
+  },
+  {
+    "id": "tmpl-order-update",
+    "title": "Order Status Update",
+    "content": "Hi {name}, your order #{order_id} has been processed and shipped! Track here: {tracking_link}",
+    "createdAt": "2026-10-02T15:41:50.568Z"
+  },
+  {
+    "id": "tmpl-reminder",
+    "title": "Appointment Reminder",
+    "content": "Reminder: Hi {name}, your appointment is scheduled for {date} at {time}. Reply YES to confirm.",
+    "createdAt": "2026-10-02T15:41:50.568Z"
+  }
+]

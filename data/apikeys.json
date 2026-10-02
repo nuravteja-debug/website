@@ -1,0 +1,30 @@
+[
+  {
+    "id": "key-ed319dfd",
+    "label": "Live Test Key",
+    "key": "wf_live_fe8315b74d804966a2b29dbd",
+    "active": true,
+    "createdAt": "2026-10-02T16:07:37.512Z"
+  },
+  {
+    "id": "key-98645131",
+    "label": "hi",
+    "key": "wf_live_6a4dc74f8f43467faa41b2a7",
+    "active": true,
+    "createdAt": "2026-10-02T16:07:22.205Z"
+  },
+  {
+    "id": "key-66b8ccf5",
+    "label": "Python Server Key",
+    "key": "wf_live_d69dad6dae8249ec8e0f0e1a",
+    "active": true,
+    "createdAt": "2026-10-02T15:59:58.200Z"
+  },
+  {
+    "id": "key-master",
+    "label": "Default Master Key",
+    "key": "whatsflow_secret_key_12345",
+    "active": true,
+    "createdAt": "2026-10-02T15:58:31.357Z"
+  }
+]
