@@ -16,6 +16,9 @@ class WhatsAppService {
     this.maxLogs = 500;
     this.indiaOnly = process.env.RESTRICT_INDIA_ONLY !== 'false';
     this.isInitializing = false;
+    this.reconnectAttempts = 0;
+    this.maxReconnectAttempts = 5;
+    this.keepAliveTimer = null;
   }
 
   setSocketIO(io) {
@@ -24,6 +27,56 @@ class WhatsAppService {
 
   setIndiaOnlyRestriction(enable) {
     this.indiaOnly = Boolean(enable);
+  }
+
+  // Detects Puppeteer "detached Frame" or "Session closed" errors
+  isDetachedError(err) {
+    const msg = err?.message || '';
+    return (
+      msg.includes('detached Frame') ||
+      msg.includes('Session closed') ||
+      msg.includes('Target closed') ||
+      msg.includes('Protocol error') ||
+      msg.includes('Execution context was destroyed')
+    );
+  }
+
+  // Auto-reconnect after a detach/crash (keeps existing session)
+  scheduleReconnect(delayMs = 5000) {
+    if (this.isInitializing) return;
+    if (this.reconnectAttempts >= this.maxReconnectAttempts) {
+      this.addLog({ level: 'error', type: 'system', message: 'Max reconnect attempts reached. Please manually reconnect.' });
+      return;
+    }
+    this.reconnectAttempts++;
+    this.addLog({ level: 'warning', type: 'system', message: `Auto-reconnecting in ${delayMs / 1000}s... (attempt ${this.reconnectAttempts}/${this.maxReconnectAttempts})` });
+    setTimeout(() => {
+      this.initialize(false); // false = keep existing session, don't wipe QR
+    }, delayMs);
+  }
+
+  // Start periodic keep-alive watchdog
+  startKeepAlive() {
+    this.stopKeepAlive();
+    this.keepAliveTimer = setInterval(async () => {
+      if (this.status !== 'READY' || !this.client) return;
+      try {
+        await this.client.getState();
+      } catch (err) {
+        console.error('Keep-alive check failed:', err.message);
+        this.addLog({ level: 'warning', type: 'system', message: 'Keep-alive check failed — triggering reconnect.' });
+        this.status = 'DISCONNECTED';
+        this.emitState();
+        this.scheduleReconnect(3000);
+      }
+    }, 30000); // check every 30 seconds
+  }
+
+  stopKeepAlive() {
+    if (this.keepAliveTimer) {
+      clearInterval(this.keepAliveTimer);
+      this.keepAliveTimer = null;
+    }
   }
 
   emitState() {
@@ -155,6 +208,7 @@ class WhatsAppService {
       console.log('WhatsApp Client is Ready!');
       this.status = 'READY';
       this.isInitializing = false;
+      this.reconnectAttempts = 0; // reset on successful connect
       try {
         const info = this.client.info;
         this.userInfo = {
@@ -171,6 +225,7 @@ class WhatsAppService {
         type: 'system',
         message: `WhatsApp Web Ready! Connected as ${this.userInfo.pushname} (+${this.userInfo.number})`
       });
+      this.startKeepAlive(); // begin watchdog
     });
 
     // Handle Incoming WhatsApp Messages for Real-Time Live Chat
@@ -219,8 +274,14 @@ class WhatsAppService {
       this.qrCodeDataUrl = null;
       this.userInfo = null;
       this.isInitializing = false;
+      this.stopKeepAlive();
       this.emitState();
       this.addLog({ level: 'warning', type: 'system', message: `Disconnected from WhatsApp Web: ${reason}` });
+
+      // Auto-reconnect on unexpected disconnection
+      if (reason !== 'LOGOUT') {
+        this.scheduleReconnect(6000);
+      }
     });
 
     try {
@@ -337,6 +398,22 @@ class WhatsAppService {
       };
     } catch (error) {
       console.error(`Failed to send message to ${to}:`, error);
+
+      // Handle detached frame / session crashed — auto-reconnect
+      if (this.isDetachedError(error)) {
+        this.addLog({
+          level: 'warning',
+          type: 'send',
+          recipient: to,
+          message: `WhatsApp session detached. Reconnecting automatically...`
+        });
+        this.status = 'DISCONNECTED';
+        this.stopKeepAlive();
+        this.emitState();
+        this.scheduleReconnect(4000);
+        throw new Error('WhatsApp session lost. Reconnecting automatically — please retry in a few seconds.');
+      }
+
       this.addLog({
         level: 'error',
         type: 'send',
