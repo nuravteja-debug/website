@@ -2,6 +2,8 @@ node_modules/
 .wwebjs_auth/
 .wwebjs_cache/
 data/session/
+data/test-session/
+data/chat_history.json
 uploads/
 .env
 *.log
