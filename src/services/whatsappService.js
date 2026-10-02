@@ -158,6 +158,9 @@ class WhatsAppService {
 
     this.client = new Client({
       authStrategy: new LocalAuth({ dataPath: sessionPath }),
+      restartOnAuthFail: true,
+      takeoverOnConflict: true,
+      takeoverTimeoutMs: 10000,
       puppeteer: {
         headless: true,
         args: [
@@ -167,8 +170,18 @@ class WhatsAppService {
           '--disable-accelerated-2d-canvas',
           '--no-first-run',
           '--no-zygote',
-          '--disable-gpu'
-        ]
+          '--disable-gpu',
+          '--disable-extensions',
+          '--disable-background-networking',
+          '--disable-default-apps',
+          '--disable-sync',
+          '--disable-translate',
+          '--metrics-recording-only',
+          '--mute-audio',
+          '--safebrowsing-disable-auto-update',
+          '--single-process'
+        ],
+        timeout: 60000
       }
     });
 
@@ -332,20 +345,8 @@ class WhatsAppService {
     }
 
     try {
-      try {
-        const isRegistered = await this.client.isRegisteredUser(chatId);
-        if (!isRegistered) {
-          this.addLog({
-            level: 'error',
-            type: 'send',
-            recipient: to,
-            message: `Failed: Number ${to} is not registered on WhatsApp.`
-          });
-          throw new Error(`Phone number ${to} is not registered on WhatsApp.`);
-        }
-      } catch (regErr) {
-        console.log('Skipping registered user pre-check:', regErr.message);
-      }
+      // Skip the isRegisteredUser check — it can cause detached frame errors
+      // and is not critical for sending
 
       let options = {};
       let media = null;
